@@ -1,13 +1,8 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
-
 pool:
-  vmImage: default
+  name: default
+
 
 steps:
 - script: echo Hello, world!
@@ -17,14 +12,10 @@ steps:
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
-- task: Application security testing@2025
+
+- task: Checkmarx AST@3
   inputs:
-    projectName: 'CxSAST_DEmo_test'
-    enableProxy: false
-    enableSastScan: true
-    CheckmarxService: 'CxSAST'
-    sastProxyUrl: 'http://sudhat-lt/'
-    enableSastBranching: false
-    fullTeamName: 'CxServer'
-    incScan: false
-    enableDependencyScan: false
+    CheckmarxService: 'CxONE connection'
+    projectName: '$(Build.Repository.Name)'
+    branchName: '$(Build.SourceBranchName)'
+    tenantName: 'ast_abdul_ansari'
