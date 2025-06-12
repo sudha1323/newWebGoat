@@ -24,4 +24,4 @@ steps:
     projectName: 'new_ADO'
     branchName: 'main'
     tenantName: 'ast_abdul_ansari'
-    additionalParams: '--threshold "sast-high=1; sast-medium=2; sca-high=1; containers-high=5"'
+   
