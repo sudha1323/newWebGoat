@@ -5,6 +5,8 @@
 
 trigger:
 - main
+pool:
+  name: default
 
 variables:
   - group: "CxOne DAST Variables"
