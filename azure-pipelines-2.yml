@@ -1,0 +1,46 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+variables:
+  - group: "CxOne DAST Variables"
+
+jobs:
+  - job: CX_ast_scan
+    displayName: 'Running Checkmarx Static Scanners'
+    steps:
+      - task: Checkmarx AST@3
+        inputs:
+          CheckmarxService: 'CxONE'
+          projectName: '$(Build.Repository.Name)'
+          branchName: '$(Build.SourceBranchName)'
+          tenantName: 'ast_abdul_ansari'
+          additionalParams: '--async'
+
+  - job: CX_dast_scan
+    displayName: 'Initiate DAST scan'
+    steps:
+      - script: |
+          echo "Pulling Docker image..."
+          docker pull checkmarx/dast:latest
+          echo "Running Docker container..."
+          podman run ^
+            -d ^
+            -e CX_APIKEY=$(CX_APIKEY) ^
+            -v "C:\Users\SudhaT\Downloads\vsts-agent-win-x64-4.248.0/_work/3/s:/dast_home" ^
+            checkmarx/dast:latest web ^
+            --environment-id="5e10cbe8-34bb-43da-a13a-8a895bd63733" ^
+            --config="/dast_home/DAST-AZURE/dast-config/altoro_mutual_config.yaml" ^
+            --base-url=https://eu.ast.checkmarx.net/ ^
+            --output="/dast_home/DAST-AZURE/" ^
+            --timeout=100000 ^
+            --update-interval=10 ^
+            --jvm-properties=-Xmx3G ^
+            --log-level=info ^
+            --verbose ^
+            --retry=3 ^
+            --retry-delay=20
